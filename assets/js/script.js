@@ -5,6 +5,10 @@ num, nunber to return
 
 returns: json response
 */
+// Access the classes through the global ol namespace
+
+
+let POSITION = null;
 
 const fetchRestroomsByLocation = (lat, lng, num) => {
     return new Promise((resolve, reject) => {
@@ -24,15 +28,30 @@ const fetchRestroomsByLocation = (lat, lng, num) => {
         })
     })
 };
-const successfulLocationGrab = (position) => {
-    console.log("Position recieved: ");
-    console.log(position);
-    fetchRestroomsByLocation(position.coords.latitude, position.coords.longitude, 10)
-    .then((json) => {
-        console.log(json)
-    })
+const renderMapAtPosition = (position, target) => {
+    console.log("rendering map with positions:");
+    var lat            = position.coords.latitude;
+    var lon            = position.coords.longitude;
+    var zoom           = 18;
+
+    var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+    var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+    var position       = new OpenLayers.LonLat(lon, lat).transform( fromProjection, toProjection);
+
+    map = new OpenLayers.Map("results-container");
+    var mapnik         = new OpenLayers.Layer.OSM();
+    map.addLayer(mapnik);
+
+    var markers = new OpenLayers.Layer.Markers( "Markers" );
+    map.addLayer(markers);
+    markers.addMarker(new OpenLayers.Marker(position));
+
+    map.setCenter(position, zoom);
 }
-function errorOnLocationGrab(err) {
+const successfulLocationGrab = (position) => {
+    renderMapAtPosition(position, "demoMap")
+}
+const errorOnLocationGrab = (err) => {
     console.warn(`ERROR(${err.code}): ${err.message}`);
 }
 navigator.geolocation.getCurrentPosition(successfulLocationGrab, errorOnLocationGrab);
