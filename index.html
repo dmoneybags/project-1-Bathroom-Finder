@@ -10,20 +10,20 @@
   <title>Bathroom Finder</title>
 </head>
 
-<body class="">
-  <header>
-    <h1>Bathroom Finder</h1>
+<body class="grid grid-rows-12 gap-4 h-screen w-screen place-content-center">
+  <header class="row-span-2 border border-solid place-content-center">
+    <h1 class="text-center">Bathroom Finder</h1>
   </header>
-  <main>
+  <main class="row-span-8 border border-solid place-content-center">
     <article id="results-container"> result-container placeholder
         <img id="toilet-img" src="https://placehold.co/600x400?text=Hello+World" alt="">
     </article>
   </main>
-  <nav>
-    <form>
-      <input type="text" id="address-input" placeholder="Address?">
-      <button type="button" id="address-search-btn">Search address</button>   
-      <button type="button" id="near-search-btn">Search near me</button>   
+  <nav class="row-span-2 border border-solid mb-4">
+    <form class="place-content-center h-full w-full grid gird-rows-3">
+      <!-- <input type="text" class="border border-solid " id="address-input" placeholder="Address?">
+      <button type="button" class="border border-solid" id="address-search-btn">Search address</button>    -->
+      <button type="button" class="border border-solid" id="near-search-btn">Search near me</button>   
     </form>
   </nav>
   <script src="./assets/js/script.js"></script>
