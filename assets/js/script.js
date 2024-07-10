@@ -54,9 +54,6 @@ const successfulLocationGrab = (position) => {
 const errorOnLocationGrab = (err) => {
     console.warn(`ERROR(${err.code}): ${err.message}`);
 }
-<<<<<<< HEAD
-navigator.geolocation.getCurrentPosition(successfulLocationGrab, errorOnLocationGrab);
-=======
 
 /*
 Search restroom by the address input
@@ -100,4 +97,3 @@ document.querySelector("#address-input").addEventListener("keypress", function(e
     document.querySelector("#address-search-btn").click();
   }
 });
->>>>>>> dev

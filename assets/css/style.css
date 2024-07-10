@@ -1,7 +1,6 @@
-<<<<<<< HEAD
 #results-container {
     height: 300px;
-=======
+}
 /*
 ! tailwindcss v3.4.4 | MIT License | https://tailwindcss.com
 */
@@ -612,5 +611,4 @@ video {
 
 .text-center {
   text-align: center;
->>>>>>> dev
 }
