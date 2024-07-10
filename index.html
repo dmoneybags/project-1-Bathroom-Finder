@@ -10,20 +10,23 @@
   <title>Bathroom Finder</title>
 </head>
 
-<body class="grid grid-rows-12 gap-4 h-screen w-screen place-content-center">
-  <header class="row-span-2 border border-solid place-content-center mt-4">
-    <h1 class="text-center">Bathroom Finder</h1>
+<body class="grid grid-rows-12 gap-4 h-screen w-screen place-content-center bg-slate-900">
+  <header class="row-span-2 border-2 border-solid border-slate-700 rounded-md place-content-center mt-4 bg-blue-950">
+    <h1 class="text-center text-sky-300 text-5xl font-semibold">Bathroom Finder</h1>
   </header>
-  <main class="row-span-8 border border-solid place-content-center">
-    <article id="results-container"> result-container placeholder
-        <img id="toilet-img" src="https://placehold.co/600x400?text=Happy+Toilet" alt="">
+  <main class="row-span-7 place-content-center">
+    <article id="results-container">
+        <img id="toilet-img" src="./assets/images/pexels-cottonbro-4114708_400.533.jpg" alt="">
     </article>
   </main>
-  <nav class="row-span-2 border border-solid mb-4">
-    <form class="place-content-center h-full w-full grid gird-rows-3">
-      <!-- <input type="text" class="border border-solid " id="address-input" placeholder="Address?">
-      <button type="button" class="border border-solid" id="address-search-btn">Search address</button>    -->
-      <button type="button" class="border border-solid" id="near-search-btn">Search near me</button>   
+  <nav class="row-span-3 border-2 rounded-md border-solid mb-4 border-slate-700 bg-blue-950 pt-2">
+    <form class="flex flex-col h-full place-items-center">
+      <button type="button" class="w-1/2 border border-solid rounded-full border-slate-700 mt-4 mb-5 bg-sky-300 text-slate-900 text-sm font-semibold py-2" id="near-search-btn">Search near me</button> 
+      <p class="text-sky-300 text-sm text-center">OR</p> 
+      <div class="flex flex-row mt-4">
+        <input type="text" class="border border-solid rounded-md m-4 basis-5/7 px-2 py-1" id="address-input" placeholder="Enter Address">
+        <button type="button" class="border border-solid border-slate-700 mr-3 my-4 rounded-md bg-sky-300 text-slate-900 font-semibold text-sm basis-2/7 p-1" id="address-search-btn">Search by address</button>  
+      </div>
     </form>
   </nav>
   <script src="./assets/js/script.js"></script>
