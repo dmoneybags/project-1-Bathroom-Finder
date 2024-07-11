@@ -29,7 +29,7 @@ const fetchRestroomsByLocation = (lat, lng, num) => {
     })
 };
 
-const renderMapAtPosition = (position, target) => {
+const renderMapAtPosition = (position, target, json) => {
     console.log("rendering map with positions:");
     var lat            = position.coords.latitude;
     var lon            = position.coords.longitude;
@@ -47,12 +47,22 @@ const renderMapAtPosition = (position, target) => {
 
     var markers = new OpenLayers.Layer.Markers( "Markers" );
     map.addLayer(markers);
-    markers.addMarker(new OpenLayers.Marker(position));
-
+    let homeMarker = new OpenLayers.Icon("/assets/images/marker.png", {w: 21, h: 25}, {x: -10.5, y: -25})
+    markers.addMarker(new OpenLayers.Marker(position, homeMarker));
+    
+    for (bathroom of json){
+        console.log("rendering marker at " + bathroom.longitude + ", " + bathroom.latitude);
+        const bathroomIcon = new OpenLayers.Icon("/assets/images/toilet.png", {w: 21, h: 25}, {x: -10.5, y: -25});
+        markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(bathroom.longitude, bathroom.latitude).transform( fromProjection, toProjection)
+        , bathroomIcon))
+    }
     map.setCenter(position, zoom);
 }
 const successfulLocationGrab = (position) => {
-    renderMapAtPosition(position, "demoMap")
+    fetchRestroomsByLocation(position.coords.latitude, position.coords.longitude)
+    .then((json) => {
+        renderMapAtPosition(position, "demoMap", json)
+    });
 }
 const errorOnLocationGrab = (err) => {
     console.warn(`ERROR(${err.code}): ${err.message}`);
@@ -92,6 +102,10 @@ function wipeResultsContainer() {
   document.querySelector("#results-container").innerHTML = "";
 }
 
+function getGoogleMapDirURL (userLat, userLon, bathroomLat, bathroomLon) {
+  return "https://www.google.com/maps/dir/" + userLat + "," + userLon + "/" + bathroomLat + "," + bathroomLon ;
+}
+
 navigator.geolocation.getCurrentPosition(successfulLocationGrab, errorOnLocationGrab);
 
 /*
@@ -104,8 +118,3 @@ document.querySelector("#address-input").addEventListener("keypress", function(e
     document.querySelector("#address-search-btn").click();
   }
 });
-
-
-function getGoogleMapDirURL (userLat, userLon, bathroomLat, bathroomLon) {
-  return "https://www.google.com/maps/dir/" + userLat + "," + userLon + "/" + bathroomLat + "," + bathroomLon ;
-}
