@@ -63,6 +63,7 @@ const successfulLocationGrab = (position) => {
     fetchRestroomsByLocation(position.coords.latitude, position.coords.longitude)
     .then((json) => {
         renderMapAtPosition(position, "demoMap", json)
+        renderBathroomList(json, position.coords.latitude, position.coords.longitude)
     });
 }
 const errorOnLocationGrab = (err) => {
@@ -70,9 +71,10 @@ const errorOnLocationGrab = (err) => {
 }
 
 const renderBathroomList = (json, userLat, userLng) => {
-    const resultsListDiv = document.getElementById("#results-listing");
+    const resultsListDiv = document.querySelector("#results-listing");
+    document.querySelector("main").setAttribute("class", "row-span-4 w-svw");
     
-    for(i=0; i<json.length; i++) {
+    for(i=0; i<5; i++) {
       const name = json[i].name;
       const street = json[i].street;
       const city = json[i].city;
@@ -84,16 +86,11 @@ const renderBathroomList = (json, userLat, userLng) => {
   
       const bathroomListEntry = {
         name: name, 
-        address: `${street} /n ${city}, ${state}`,
+        address1: `${street}`,  
+        address2: `${city}, ${state}`,
         unisex: unisex,
         distance: distance,
       }
-
-      bathroomName.textContent = bathroomListEntry.name;
-      bathroomDist.textContent = `Distance: ${bathroomListEntry.distance}`;
-      bathroomAddress.textContent = bathroomListEntry.address;
-      bathroomUnisex.textContent = `Unisex: ${bathroomListEntry.unisex}`;
-      dirButton.textContent = `Get directions`;
 
       const bathroomDiv = document.createElement('div');
       const bathroomHeaderDiv = document.createElement('div');
@@ -101,61 +98,79 @@ const renderBathroomList = (json, userLat, userLng) => {
       const bathroomDist = document.createElement('h3');
       const bathroomTextDiv = document.createElement('div');
       const bathroomContentDiv = document.createElement('div');
-      const bathroomAddress = document.createElement('p');
-      // const bathroomCity = document.createElement('p');
-      // const bathroomState = document.createElement('p');
+      const bathroomAddress1 = document.createElement('p');
+      const bathroomAddress2  = document.createElement('p');
       const bathroomUnisex = document.createElement('p');
       const dirButton = document.createElement('button');
+      
+      dirButton.textContent = `Get directions`;
+      bathroomName.textContent = bathroomListEntry.name;
+      bathroomDist.textContent = `Distance: ${bathroomListEntry.distance}`;
+      bathroomAddress1.textContent = bathroomListEntry.address1;
+      bathroomAddress2.textContent = bathroomListEntry.address2;
+      bathroomUnisex.textContent = `Unisex: ${bathroomListEntry.unisex}`;
 
-      resultsListDiv.addClass(
-        'bg-blue=950 border border-2 border-solid border-slate-700'
+      resultsListDiv.setAttribute(
+        'class',
+        'bg-slate-900 border border-2 border-solid border-slate-700 overflow-y-auto w-11/12 mx-auto row-span-3'
       )
 
-      bathroomDiv.addClass(
-        'bg-slate-900 border border-2 border-solid border-slate-700 m-1 flex justify-between'
+      bathroomDiv.setAttribute(
+        'class',
+        'bg-blue-950 border border-2 border-solid border-slate-700 m-1 flex justify-between'
       );
 
-      bathroomHeaderDiv.addClass(
+      bathroomHeaderDiv.setAttribute(
+        'class',
         'border-b-1 border-solid border-slate-600 mx-1 flex flex-row p-1'
       );
 
-      bathroomName.addClass(
+      bathroomName.setAttribute(
+        'class',
         'text-sky-300 font-bold flex-none pl-1 px-1 mr-2 basis-2/3 text-lg'
       );
 
-      bathroomDist.addClass(
+      bathroomDist.setAttribute(
+        'class',
         'text-sky-300 font-bold flex-none pr-1 px-1 ml-2 basis-1/3 text-lg'
       );
 
-      bathroomContentDiv.addClass(
+      bathroomContentDiv.setAttribute(
+        'class',
         'flex flex-row justify-stretch'
       );
       
-      bathroomTextDiv.addClass(
+      bathroomTextDiv.setAttribute(
+        'class',
         'p-1 m-1 justify-start'
       );
 
-      bathroomAddress.addClass(
+      bathroomAddress1.setAttribute(
+        'class',
         'text-sky-300 text-sm mb-1'
       );
 
-      bathroomUnisex.addClass(
+      bathroomAddress2.setAttribute(
+        'class',
+        'text-sky-300 text-sm mb-1'
+      );
+
+      bathroomUnisex.setAttribute(
+        'class',
         'text-sky-300 text-sm'
       );
 
-      dirButton.addClass(
-        'justify-end p-1 m-1 text-base text-blue-950 text-semibold bg-sky-300 border border-1 border-slate-700'
+      dirButton.setAttribute(
+        'class',
+        'justify-end p-1 m-1 text-base text-blue-950 text-semibold bg-sky-300 border border-1 border-slate-700 rounded-full'
       )
 
       bathroomHeaderDiv.append(bathroomName, bathroomDist);
-      bathroomTextDiv.append(bathroomAddress, bathroomUnisex)
+      bathroomTextDiv.append(bathroomAddress1, bathroomAddress2, bathroomUnisex)
       bathroomContentDiv.append(bathroomTextDiv, dirButton)
       bathroomDiv.append(bathroomHeaderDiv, bathroomContentDiv);
       resultsListDiv.append(bathroomDiv);
     
-      // event listener to center map
-      //event listener to send to GoogleMaps
-      // getGoogleMapDirURL (userLat, userLon, bathroomLat, bathroomLon)
     }
 
       
@@ -216,6 +231,7 @@ document.querySelector("#address-search-btn").addEventListener("click", function
             }
         }
         renderMapAtPosition(position, "demoMap", json.bathroomJson);
+        renderBathroomList(json, position.coords.latitude, position.coords.longitude)
     })
 });
 document.querySelector("#address-input").addEventListener("keypress", function(event) {
