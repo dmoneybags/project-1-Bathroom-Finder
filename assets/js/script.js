@@ -28,6 +28,7 @@ const fetchRestroomsByLocation = (lat, lng, num) => {
         })
     })
 };
+
 const renderMapAtPosition = (position, target) => {
     console.log("rendering map with positions:");
     var lat            = position.coords.latitude;
@@ -37,6 +38,8 @@ const renderMapAtPosition = (position, target) => {
     var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
     var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
     var position       = new OpenLayers.LonLat(lon, lat).transform( fromProjection, toProjection);
+
+    wipeResultsContainer();
 
     map = new OpenLayers.Map("results-container");
     var mapnik         = new OpenLayers.Layer.OSM();
@@ -85,6 +88,10 @@ function getRestroomsByAddress() {
   addrEl.value = "";
 }
 
+function wipeResultsContainer() {
+  document.querySelector("#results-container").innerHTML = "";
+}
+
 navigator.geolocation.getCurrentPosition(successfulLocationGrab, errorOnLocationGrab);
 
 /*
@@ -97,3 +104,8 @@ document.querySelector("#address-input").addEventListener("keypress", function(e
     document.querySelector("#address-search-btn").click();
   }
 });
+
+
+function getGoogleMapDirURL (userLat, userLon, bathroomLat, bathroomLon) {
+  return "https://www.google.com/maps/dir/" + userLat + "," + userLon + "/" + bathroomLat + "," + bathroomLon ;
+}
