@@ -30,7 +30,7 @@ const fetchRestroomsByLocation = (lat, lng, num) => {
     })
 };
 
-const renderMapAtPosition = (position, target) => {
+const renderMapAtPosition = (position, target, json) => {
     console.log("rendering map with positions:");
     var lat            = position.coords.latitude;
     var lon            = position.coords.longitude;
@@ -48,12 +48,22 @@ const renderMapAtPosition = (position, target) => {
 
     var markers = new OpenLayers.Layer.Markers( "Markers" );
     map.addLayer(markers);
-    markers.addMarker(new OpenLayers.Marker(position));
-
+    let homeMarker = new OpenLayers.Icon("/assets/images/marker.png", {w: 21, h: 25}, {x: -10.5, y: -25})
+    markers.addMarker(new OpenLayers.Marker(position, homeMarker));
+    
+    for (bathroom of json){
+        console.log("rendering marker at " + bathroom.longitude + ", " + bathroom.latitude);
+        const bathroomIcon = new OpenLayers.Icon("/assets/images/toilet.png", {w: 21, h: 25}, {x: -10.5, y: -25});
+        markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(bathroom.longitude, bathroom.latitude).transform( fromProjection, toProjection)
+        , bathroomIcon))
+    }
     map.setCenter(position, zoom);
 }
 const successfulLocationGrab = (position) => {
-    renderMapAtPosition(position, "demoMap")
+    fetchRestroomsByLocation(position.coords.latitude, position.coords.longitude)
+    .then((json) => {
+        renderMapAtPosition(position, "demoMap", json)
+    });
 }
 const errorOnLocationGrab = (err) => {
     console.warn(`ERROR(${err.code}): ${err.message}`);
@@ -96,6 +106,10 @@ const renderBathroomList = (json, userLat, userLng) => {
       // const bathroomState = document.createElement('p');
       const bathroomUnisex = document.createElement('p');
       const dirButton = document.createElement('button');
+
+      resultsListDiv.addClass(
+        'bg-blue=950 border border-2 border-solid border-slate-700'
+      )
 
       bathroomDiv.addClass(
         'bg-slate-900 border border-2 border-solid border-slate-700 m-1 flex justify-between'
@@ -154,17 +168,20 @@ Fetch geocode from Geoapify, then pass to fetchRestroomsByLocation
 function getRestroomsByAddress() {
   const addrEl = document.querySelector("#address-input");
 
-  new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     fetch("https://api.geoapify.com/v1/geocode/search?text=" + addrEl.value.trim() + "&apiKey=3711ee29d36e4eac92f367e2842a812a&limit=1&bias=countrycode:us")
     .then((response) => {
         console.log(response);
         response.json()
-        .then((json) => {
+        .then((addrJson) => {
             console.log("Addr geocode Recieved json:");
-            resolve(json);
-            fetchRestroomsByLocation(json.features[0].geometry.coordinates[1], json.features[0].geometry.coordinates[0], 10)
+            fetchRestroomsByLocation(addrJson.features[0].geometry.coordinates[1], addrJson.features[0].geometry.coordinates[0], 10)
             .then((json) => {
-                console.log(json)
+                resolve({
+                    bathroomJson: json,
+                    latitude: addrJson.features[0].geometry.coordinates[1],
+                    longitude: addrJson.features[0].geometry.coordinates[0]
+                });
             })
         })
     })
@@ -173,28 +190,40 @@ function getRestroomsByAddress() {
         console.log(error);
         reject(error);
     })
+    .finally(() => {
+        addrEl.value = "";
+    })
   })
-  addrEl.value = "";
 }
 
 function wipeResultsContainer() {
   document.querySelector("#results-container").innerHTML = "";
 }
 
-navigator.geolocation.getCurrentPosition(successfulLocationGrab, errorOnLocationGrab);
-
+function getGoogleMapDirURL (userLat, userLon, bathroomLat, bathroomLon) {
+  return "https://www.google.com/maps/dir/" + userLat + "," + userLon + "/" + bathroomLat + "," + bathroomLon ;
+}
 /*
 Event listeners for the address search bar and button. 
 */
-document.querySelector("#address-search-btn").addEventListener("click", getRestroomsByAddress);
+document.querySelector("#address-search-btn").addEventListener("click", function(event){
+    getRestroomsByAddress()
+    .then((json) => {
+        const position = {
+            coords: {
+                latitude: json.latitude,
+                longitude: json.longitude
+            }
+        }
+        renderMapAtPosition(position, "demoMap", json.bathroomJson);
+    })
+});
 document.querySelector("#address-input").addEventListener("keypress", function(event) {
   if (event.key === "Enter") {
     event.preventDefault();
     document.querySelector("#address-search-btn").click();
   }
 });
-
-
-function getGoogleMapDirURL (userLat, userLon, bathroomLat, bathroomLon) {
-  return "https://www.google.com/maps/dir/" + userLat + "," + userLon + "/" + bathroomLat + "," + bathroomLon ;
-}
+document.querySelector("#near-search-btn").addEventListener("click", function(event){
+    navigator.geolocation.getCurrentPosition(successfulLocationGrab, errorOnLocationGrab);
+})
