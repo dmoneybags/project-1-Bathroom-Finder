@@ -75,17 +75,20 @@ Fetch geocode from Geoapify, then pass to fetchRestroomsByLocation
 function getRestroomsByAddress() {
   const addrEl = document.querySelector("#address-input");
 
-  new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     fetch("https://api.geoapify.com/v1/geocode/search?text=" + addrEl.value.trim() + "&apiKey=3711ee29d36e4eac92f367e2842a812a&limit=1&bias=countrycode:us")
     .then((response) => {
         console.log(response);
         response.json()
-        .then((json) => {
+        .then((addrJson) => {
             console.log("Addr geocode Recieved json:");
-            resolve(json);
-            fetchRestroomsByLocation(json.features[0].geometry.coordinates[1], json.features[0].geometry.coordinates[0], 10)
+            fetchRestroomsByLocation(addrJson.features[0].geometry.coordinates[1], addrJson.features[0].geometry.coordinates[0], 10)
             .then((json) => {
-                console.log(json)
+                resolve({
+                    bathroomJson: json,
+                    latitude: addrJson.features[0].geometry.coordinates[1],
+                    longitude: addrJson.features[0].geometry.coordinates[0]
+                });
             })
         })
     })
@@ -94,8 +97,10 @@ function getRestroomsByAddress() {
         console.log(error);
         reject(error);
     })
+    .finally(() => {
+        addrEl.value = "";
+    })
   })
-  addrEl.value = "";
 }
 
 function wipeResultsContainer() {
@@ -111,7 +116,18 @@ navigator.geolocation.getCurrentPosition(successfulLocationGrab, errorOnLocation
 /*
 Event listeners for the address search bar and button. 
 */
-document.querySelector("#address-search-btn").addEventListener("click", getRestroomsByAddress);
+document.querySelector("#address-search-btn").addEventListener("click", function(event){
+    getRestroomsByAddress()
+    .then((json) => {
+        const position = {
+            coords: {
+                latitude: json.latitude,
+                longitude: json.longitude
+            }
+        }
+        renderMapAtPosition(position, "demoMap", json.bathroomJson);
+    })
+});
 document.querySelector("#address-input").addEventListener("keypress", function(event) {
   if (event.key === "Enter") {
     event.preventDefault();
