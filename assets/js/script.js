@@ -110,9 +110,6 @@ function wipeResultsContainer() {
 function getGoogleMapDirURL (userLat, userLon, bathroomLat, bathroomLon) {
   return "https://www.google.com/maps/dir/" + userLat + "," + userLon + "/" + bathroomLat + "," + bathroomLon ;
 }
-
-navigator.geolocation.getCurrentPosition(successfulLocationGrab, errorOnLocationGrab);
-
 /*
 Event listeners for the address search bar and button. 
 */
@@ -134,3 +131,6 @@ document.querySelector("#address-input").addEventListener("keypress", function(e
     document.querySelector("#address-search-btn").click();
   }
 });
+document.querySelector("#near-search-btn").addEventListener("click", function(event){
+    navigator.geolocation.getCurrentPosition(successfulLocationGrab, errorOnLocationGrab);
+})
