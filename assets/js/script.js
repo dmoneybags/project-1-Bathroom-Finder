@@ -18,6 +18,7 @@ const fetchRestroomsByLocation = (lat, lng, num) => {
             response.json()
             .then((json) => {
                 console.log("Recieved restroom json");
+                renderBathroomList(json, lat, lng);
                 resolve(json);
             })
         })
@@ -56,6 +57,94 @@ const successfulLocationGrab = (position) => {
 }
 const errorOnLocationGrab = (err) => {
     console.warn(`ERROR(${err.code}): ${err.message}`);
+}
+
+const renderBathroomList = (json, userLat, userLng) => {
+    const resultsListDiv = document.getElementById("#results-listing");
+    
+    for(i=0; i<json.length; i++) {
+      const name = json[i].name;
+      const street = json[i].street;
+      const city = json[i].city;
+      const state = json[i].state;
+      const destLat = json[i].latitude;
+      const destLng = json[i].longitude;
+      const distance = Number(json[i].distance).toFixed(2);
+      const unisex = json[i].unisex ? 'yes':'no';
+  
+      const bathroomListEntry = {
+        name: name, 
+        address: `${street} /n ${city}, ${state}`,
+        unisex: unisex,
+        distance: distance,
+      }
+
+      bathroomName.textContent = bathroomListEntry.name;
+      bathroomDist.textContent = `Distance: ${bathroomListEntry.distance}`;
+      bathroomAddress.textContent = bathroomListEntry.address;
+      bathroomUnisex.textContent = `Unisex: ${bathroomListEntry.unisex}`;
+      dirButton.textContent = `Get directions`;
+
+      const bathroomDiv = document.createElement('div');
+      const bathroomHeaderDiv = document.createElement('div');
+      const bathroomName = document.createElement('h3');
+      const bathroomDist = document.createElement('h3');
+      const bathroomTextDiv = document.createElement('div');
+      const bathroomContentDiv = document.createElement('div');
+      const bathroomAddress = document.createElement('p');
+      // const bathroomCity = document.createElement('p');
+      // const bathroomState = document.createElement('p');
+      const bathroomUnisex = document.createElement('p');
+      const dirButton = document.createElement('button');
+
+      bathroomDiv.addClass(
+        'bg-slate-900 border border-2 border-solid border-slate-700 m-1 flex justify-between'
+      );
+
+      bathroomHeaderDiv.addClass(
+        'border-b-1 border-solid border-slate-600 mx-1 flex flex-row p-1'
+      );
+
+      bathroomName.addClass(
+        'text-sky-300 font-bold flex-none pl-1 px-1 mr-2 basis-2/3 text-lg'
+      );
+
+      bathroomDist.addClass(
+        'text-sky-300 font-bold flex-none pr-1 px-1 ml-2 basis-1/3 text-lg'
+      );
+
+      bathroomContentDiv.addClass(
+        'flex flex-row justify-stretch'
+      );
+      
+      bathroomTextDiv.addClass(
+        'p-1 m-1 justify-start'
+      );
+
+      bathroomAddress.addClass(
+        'text-sky-300 text-sm mb-1'
+      );
+
+      bathroomUnisex.addClass(
+        'text-sky-300 text-sm'
+      );
+
+      dirButton.addClass(
+        'justify-end p-1 m-1 text-base text-blue-950 text-semibold bg-sky-300 border border-1 border-slate-700'
+      )
+
+      bathroomHeaderDiv.append(bathroomName, bathroomDist);
+      bathroomTextDiv.append(bathroomAddress, bathroomUnisex)
+      bathroomContentDiv.append(bathroomTextDiv, dirButton)
+      bathroomDiv.append(bathroomHeaderDiv, bathroomContentDiv);
+      resultsListDiv.append(bathroomDiv);
+    
+      // event listener to center map
+      //event listener to send to GoogleMaps
+      // getGoogleMapDirURL (userLat, userLon, bathroomLat, bathroomLon)
+    }
+
+      
 }
 
 /*
