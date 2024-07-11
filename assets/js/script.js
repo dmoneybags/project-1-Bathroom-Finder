@@ -104,3 +104,8 @@ document.querySelector("#address-input").addEventListener("keypress", function(e
     document.querySelector("#address-search-btn").click();
   }
 });
+
+
+function getGoogleMapDirURL (userLat, userLon, bathroomLat, bathroomLon) {
+  return "https://www.google.com/maps/dir/" + userLat + "," + userLon + "/" + bathroomLat + "," + bathroomLon ;
+}
