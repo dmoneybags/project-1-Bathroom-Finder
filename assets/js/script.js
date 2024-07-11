@@ -28,7 +28,7 @@ const fetchRestroomsByLocation = (lat, lng, num) => {
         })
     })
 };
-const renderMapAtPosition = (position, target) => {
+const renderMapAtPosition = (position, target, bathroomJson) => {
     console.log("rendering map with positions:");
     var lat            = position.coords.latitude;
     var lon            = position.coords.longitude;
@@ -47,9 +47,18 @@ const renderMapAtPosition = (position, target) => {
     markers.addMarker(new OpenLayers.Marker(position));
 
     map.setCenter(position, zoom);
+    for (bathroom of bathroomJson){
+        var marker = new OpenLayers.Marker(OpenLayers.LonLat([bathroom.longitude, bathroom.latitude]));
+        markers.addMarker(marker);
+    }
+    return map;
 }
 const successfulLocationGrab = (position) => {
-    renderMapAtPosition(position, "demoMap")
+    fetchRestroomsByLocation(position.coords.latitude, position.coords.longitude)
+    .then((json) => {
+        map = renderMapAtPosition(position, "demoMap", json);
+    })
+    
 }
 const errorOnLocationGrab = (err) => {
     console.warn(`ERROR(${err.code}): ${err.message}`);
