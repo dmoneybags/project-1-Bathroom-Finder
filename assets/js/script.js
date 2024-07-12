@@ -34,7 +34,7 @@ const renderMapAtPosition = (position, target, json) => {
     console.log("rendering map with positions:");
     var lat            = position.coords.latitude;
     var lon            = position.coords.longitude;
-    var zoom           = 18;
+    var zoom           = 15;
 
     var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
     var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
@@ -44,6 +44,7 @@ const renderMapAtPosition = (position, target, json) => {
     document.querySelector("main").setAttribute("class", "row-span-4 w-svw");
 
     map = new OpenLayers.Map("results-container");
+    window.map = map;
     var mapnik         = new OpenLayers.Layer.OSM();
     map.addLayer(mapnik);
 
@@ -97,6 +98,8 @@ const renderBathroomList = (json, userLat, userLng) => {
 
     const resultsListDiv = document.querySelector("#results-listing");
     const bathroomDiv = document.createElement('div');
+    bathroomDiv.dataset.lat = destLat;
+    bathroomDiv.dataset.lng = destLng;
     const bathroomHeaderDiv = document.createElement('div');
     const bathroomName = document.createElement('h3');
     const bathroomDist = document.createElement('p');
@@ -106,15 +109,31 @@ const renderBathroomList = (json, userLat, userLng) => {
     const bathroomAddress2  = document.createElement('p');
     const bathroomUnisex = document.createElement('p');
     const dirButton = document.createElement('button');
-    
+
     addListTextContent(dirButton, bathroomName, bathroomDist, bathroomAddress1, bathroomAddress2, bathroomUnisex, bathroomListEntry);
 
     setListElementAttributes(resultsListDiv, bathroomHeaderDiv, bathroomTextDiv, bathroomContentDiv, bathroomDiv, bathroomName, bathroomDist, bathroomAddress1, bathroomAddress2, bathroomUnisex, dirButton);
 
     appendBathroomListElements(resultsListDiv, bathroomHeaderDiv, bathroomTextDiv, bathroomContentDiv, bathroomDiv, bathroomName, bathroomDist, bathroomAddress1, bathroomAddress2, bathroomUnisex, dirButton);
+
+    addEventListenersToBathroomDiv(bathroomDiv, userLat, userLng);
   }  
 }
 
+//adding event listeners to list elements
+const addEventListenersToBathroomDiv = (bathroomDiv, userLat, userLng) => {
+    bathroomDiv.addEventListener('click', (event)=> {
+        console.log("triggered event listener");
+        if (event.target.tagName === "BUTTON"){
+            openGoogleMapDirURL(userLat, userLng, bathroomDiv.dataset.lat, bathroomDiv.dataset.lng)
+        } else {
+            var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+            var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+            var position       = new OpenLayers.LonLat(bathroomDiv.dataset.lng, bathroomDiv.dataset.lat).transform( fromProjection, toProjection);
+            window.map.setCenter(position, 15);
+        }
+    })
+}
 //adding text to list elements
 function addListTextContent(dirButton, bathroomName, bathroomDist, bathroomAddress1, bathroomAddress2, bathroomUnisex, bathroomListEntry) {
   dirButton.textContent = `Get directions`;
