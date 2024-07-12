@@ -212,7 +212,8 @@ function appendBathroomListElements (resultsListDiv, bathroomHeaderDiv, bathroom
 }
 
 /*
-Get restrooms by address from #address-input.  Leverages Geoapify to forward geocoding the address
+Get restrooms by address from #address-input.  Leverages Geoapify to forward geocoding the address then pass to 
+fetchRestroomsByLocation for bathroom locations
 */
 function getRestroomsByAddress() {
   const addrEl = document.querySelector("#address-input");
