@@ -58,7 +58,7 @@ const renderMapAtPosition = (position, target, json) => {
         , bathroomIcon))
     }
     map.setCenter(position, zoom);
-    document.querySelector("#OpenLayers_Map_2_OpenLayers_ViewPort").classList.add("rounded-md");
+    document.querySelector(".olMapViewport").classList.add("rounded-md");
 }
 const successfulLocationGrab = (position) => {
     fetchRestroomsByLocation(position.coords.latitude, position.coords.longitude)
@@ -127,12 +127,12 @@ function addListTextContent(dirButton, bathroomName, bathroomDist, bathroomAddre
 function setListElementAttributes(resultsListDiv, bathroomHeaderDiv, bathroomTextDiv, bathroomContentDiv, bathroomDiv, bathroomName, bathroomDist, bathroomAddress1, bathroomAddress2, bathroomUnisex, dirButton) {
   resultsListDiv.setAttribute(
     'class',
-    'bg-slate-900 border border-2 border-solid rounded-md border-slate-700 overflow-y-auto w-11/12 mx-auto row-span-3 mt-2'
+    'snap-y snap-mandatory bg-slate-900 border border-2 border-solid rounded-md border-slate-700 overflow-y-auto w-11/12 mx-auto row-span-3 mt-2'
   )
 
   bathroomDiv.setAttribute(
     'class',
-    'bg-blue-950 border border-2 border-solid rounded-lg border-slate-700 m-1 flex flex-col place-content-between'
+    'snap-start snap-always bg-blue-950 border border-2 border-solid rounded-lg border-slate-700 m-1 flex flex-col place-content-between'
   );
 
   bathroomHeaderDiv.setAttribute(
@@ -245,7 +245,7 @@ document.querySelector("#address-search-btn").addEventListener("click", function
             }
         }
         renderMapAtPosition(position, "demoMap", json.bathroomJson);
-        renderBathroomList(json, position.coords.latitude, position.coords.longitude)
+        renderBathroomList(json.bathroomJson, position.coords.latitude, position.coords.longitude)
     })
 });
 document.querySelector("#address-input").addEventListener("keypress", function(event) {
