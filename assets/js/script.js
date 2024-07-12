@@ -105,74 +105,89 @@ const renderBathroomList = (json, userLat, userLng) => {
     const bathroomUnisex = document.createElement('p');
     const dirButton = document.createElement('button');
     
-    dirButton.textContent = `Get directions`;
-    bathroomName.textContent = bathroomListEntry.name;
-    bathroomDist.textContent = `Distance: ${bathroomListEntry.distance}`;
-    bathroomAddress1.textContent = bathroomListEntry.address1;
-    bathroomAddress2.textContent = bathroomListEntry.address2;
-    bathroomUnisex.textContent = `Unisex: ${bathroomListEntry.unisex}`;
+    addListTextContent(dirButton, bathroomName, bathroomDist, bathroomAddress1, bathroomAddress2, bathroomUnisex, bathroomListEntry);
 
-    resultsListDiv.setAttribute(
-      'class',
-      'bg-slate-900 border border-2 border-solid rounded-md border-slate-700 overflow-y-auto w-11/12 mx-auto row-span-3 mt-2'
-    )
+    setListElementAttributes(resultsListDiv, bathroomHeaderDiv, bathroomTextDiv, bathroomContentDiv, bathroomDiv, bathroomName, bathroomDist, bathroomAddress1, bathroomAddress2, bathroomUnisex, dirButton);
 
-    bathroomDiv.setAttribute(
-      'class',
-      'bg-blue-950 border border-2 border-solid rounded-lg border-slate-700 m-1 flex flex-col place-content-between'
-    );
-
-    bathroomHeaderDiv.setAttribute(
-      'class',
-      'border-b-2 border-solid border-slate-600 flex flex-row p-1 place-content-between w-9/10'
-    );
-
-    bathroomName.setAttribute(
-      'class',
-      'text-sky-300 font-bold flex-none pl-1 basis-2/3 text-base'
-    );
-
-    bathroomDist.setAttribute(
-      'class',
-      'text-sky-300 font-semibold basis-1/3 max-w-fit text-base mr-2'
-    );
-
-    bathroomContentDiv.setAttribute(
-      'class',
-      'flex flex-row place-content-between pr-3'
-    );
-    
-    bathroomTextDiv.setAttribute(
-      'class',
-      'p-1 justify-start ml-3'
-    );
-
-    bathroomAddress1.setAttribute(
-      'class',
-      'text-sky-300 text-xs'
-    );
-
-    bathroomAddress2.setAttribute(
-      'class',
-      'text-sky-300 text-xs mb-1'
-    );
-
-    bathroomUnisex.setAttribute(
-      'class',
-      'text-sky-300 text-xs'
-    );
-
-    dirButton.setAttribute(
-      'class',
-      'py-1 px-2 m-2 text-xs text-blue-950 text-900 bg-sky-300 border border-3 border-slate-900 rounded-full w-1/4 max-w-fit h-1/4 justify-self-end self-end'
-    )
-
-    bathroomHeaderDiv.append(bathroomName, bathroomDist);
-    bathroomTextDiv.append(bathroomAddress1, bathroomAddress2, bathroomUnisex)
-    bathroomContentDiv.append(bathroomTextDiv, dirButton)
-    bathroomDiv.append(bathroomHeaderDiv, bathroomContentDiv);
-    resultsListDiv.append(bathroomDiv);
+    appendBathroomListElements(resultsListDiv, bathroomHeaderDiv, bathroomTextDiv, bathroomContentDiv, bathroomDiv, bathroomName, bathroomDist, bathroomAddress1, bathroomAddress2, bathroomUnisex, dirButton);
   }  
+}
+
+//adding text to list elements
+function addListTextContent(dirButton, bathroomName, bathroomDist, bathroomAddress1, bathroomAddress2, bathroomUnisex, bathroomListEntry) {
+  dirButton.textContent = `Get directions`;
+  bathroomName.textContent = bathroomListEntry.name;
+  bathroomDist.textContent = `Distance: ${bathroomListEntry.distance}`;
+  bathroomAddress1.textContent = bathroomListEntry.address1;
+  bathroomAddress2.textContent = bathroomListEntry.address2;
+  bathroomUnisex.textContent = `Unisex: ${bathroomListEntry.unisex}`;
+}
+
+//setting tailwind style attributes for html list elements
+function setListElementAttributes(resultsListDiv, bathroomHeaderDiv, bathroomTextDiv, bathroomContentDiv, bathroomDiv, bathroomName, bathroomDist, bathroomAddress1, bathroomAddress2, bathroomUnisex, dirButton) {
+  resultsListDiv.setAttribute(
+    'class',
+    'bg-slate-900 border border-2 border-solid rounded-md border-slate-700 overflow-y-auto w-11/12 mx-auto row-span-3 mt-2'
+  )
+
+  bathroomDiv.setAttribute(
+    'class',
+    'bg-blue-950 border border-2 border-solid rounded-lg border-slate-700 m-1 flex flex-col place-content-between'
+  );
+
+  bathroomHeaderDiv.setAttribute(
+    'class',
+    'border-b-2 border-solid border-slate-600 flex flex-row p-1 place-content-between w-9/10'
+  );
+
+  bathroomName.setAttribute(
+    'class',
+    'text-sky-300 font-bold flex-none pl-1 basis-2/3 text-base'
+  );
+
+  bathroomDist.setAttribute(
+    'class',
+    'text-sky-300 font-semibold basis-1/3 max-w-fit text-base mr-2'
+  );
+
+  bathroomContentDiv.setAttribute(
+    'class',
+    'flex flex-row place-content-between pr-3'
+  );
+  
+  bathroomTextDiv.setAttribute(
+    'class',
+    'p-1 justify-start ml-3'
+  );
+
+  bathroomAddress1.setAttribute(
+    'class',
+    'text-sky-300 text-xs'
+  );
+
+  bathroomAddress2.setAttribute(
+    'class',
+    'text-sky-300 text-xs mb-1'
+  );
+
+  bathroomUnisex.setAttribute(
+    'class',
+    'text-sky-300 text-xs'
+  );
+
+  dirButton.setAttribute(
+    'class',
+    'py-1 px-2 m-2 text-xs text-blue-950 text-900 bg-sky-300 border border-3 border-slate-900 rounded-full w-1/4 max-w-fit h-1/4 justify-self-end self-end'
+  )
+}
+
+//appending the elements together and onto the html
+function appendBathroomListElements (resultsListDiv, bathroomHeaderDiv, bathroomTextDiv, bathroomContentDiv, bathroomDiv, bathroomName, bathroomDist, bathroomAddress1, bathroomAddress2, bathroomUnisex, dirButton) {
+  bathroomHeaderDiv.append(bathroomName, bathroomDist);
+  bathroomTextDiv.append(bathroomAddress1, bathroomAddress2, bathroomUnisex)
+  bathroomContentDiv.append(bathroomTextDiv, dirButton)
+  bathroomDiv.append(bathroomHeaderDiv, bathroomContentDiv);
+  resultsListDiv.append(bathroomDiv);
 }
 
 /*
