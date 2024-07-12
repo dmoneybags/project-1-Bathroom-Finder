@@ -41,6 +41,7 @@ const renderMapAtPosition = (position, target, json) => {
     var position       = new OpenLayers.LonLat(lon, lat).transform( fromProjection, toProjection);
 
     wipeResultsContainer();
+    document.querySelector("main").setAttribute("class", "row-span-4 w-svw");
 
     map = new OpenLayers.Map("results-container");
     var mapnik         = new OpenLayers.Layer.OSM();
@@ -63,8 +64,8 @@ const renderMapAtPosition = (position, target, json) => {
 const successfulLocationGrab = (position) => {
     fetchRestroomsByLocation(position.coords.latitude, position.coords.longitude)
     .then((json) => {
-        renderMapAtPosition(position, "demoMap", json)
-        renderBathroomList(json, position.coords.latitude, position.coords.longitude)
+        renderMapAtPosition(position, "demoMap", json);
+        renderBathroomList(json, position.coords.latitude, position.coords.longitude);
     });
 }
 const errorOnLocationGrab = (err) => {
@@ -72,9 +73,10 @@ const errorOnLocationGrab = (err) => {
 }
 
 const renderBathroomList = (json, userLat, userLng) => {
-  document.querySelector("main").setAttribute("class", "row-span-4 w-svw");
   console.log(json)
-  
+
+  wipeResultsListing();
+
   for(i=0; i<5; i++) {
     const name = json[i].name;
     const street = json[i].street;
@@ -229,6 +231,10 @@ function wipeResultsContainer() {
   document.querySelector("#results-container").innerHTML = "";
 }
 
+function wipeResultsListing() {
+  document.querySelector("#results-listing").innerHTML = "";
+}
+
 function getGoogleMapDirURL (userLat, userLon, bathroomLat, bathroomLon) {
   return "https://www.google.com/maps/dir/" + userLat + "," + userLon + "/" + bathroomLat + "," + bathroomLon ;
 }
@@ -255,6 +261,6 @@ document.querySelector("#address-input").addEventListener("keypress", function(e
   }
 });
 document.querySelector("#near-search-btn").addEventListener("click", function(event){
-  document.querySelector("#results-listing").innerHTML = ""
+  
   navigator.geolocation.getCurrentPosition(successfulLocationGrab, errorOnLocationGrab);
 })
