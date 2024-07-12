@@ -73,6 +73,10 @@ const errorOnLocationGrab = (err) => {
     console.warn(`ERROR(${err.code}): ${err.message}`);
 }
 
+/*
+Passes in json data from restroom API fetch, builds arrays for top 5 bathrooms returned comprising name, address, unisex info, and distance from user or address input. Creates html elements to build out bathroom results list to display that info. 
+*/
+
 const renderBathroomList = (json, userLat, userLng) => {
   console.log(json)
 
@@ -120,7 +124,7 @@ const renderBathroomList = (json, userLat, userLng) => {
   }  
 }
 
-//adding event listeners to list elements
+//subfunction adding event listeners to list elements
 const addEventListenersToBathroomDiv = (bathroomDiv, userLat, userLng) => {
     bathroomDiv.addEventListener('click', (event)=> {
         console.log("triggered event listener");
@@ -134,7 +138,10 @@ const addEventListenersToBathroomDiv = (bathroomDiv, userLat, userLng) => {
         }
     })
 }
-//adding text to list elements
+
+/*
+Add text to dynamically created bathroom list elements.
+*/
 function addListTextContent(dirButton, bathroomName, bathroomDist, bathroomAddress1, bathroomAddress2, bathroomUnisex, bathroomListEntry) {
   dirButton.textContent = `Get directions`;
   bathroomName.textContent = bathroomListEntry.name;
@@ -144,7 +151,9 @@ function addListTextContent(dirButton, bathroomName, bathroomDist, bathroomAddre
   bathroomUnisex.textContent = `Unisex: ${bathroomListEntry.unisex}`;
 }
 
-//setting tailwind style attributes for html list elements
+/*
+Set tailwind style attributes for dynamically created html bathroom list elements.
+*/
 function setListElementAttributes(resultsListDiv, bathroomHeaderDiv, bathroomTextDiv, bathroomContentDiv, bathroomDiv, bathroomName, bathroomDist, bathroomAddress1, bathroomAddress2, bathroomUnisex, dirButton) {
   resultsListDiv.setAttribute(
     'class',
@@ -202,7 +211,10 @@ function setListElementAttributes(resultsListDiv, bathroomHeaderDiv, bathroomTex
   )
 }
 
-//appending the elements together and onto the html
+/*
+Build the dynamically created html elements into the bathroom results list.
+*/
+
 function appendBathroomListElements (resultsListDiv, bathroomHeaderDiv, bathroomTextDiv, bathroomContentDiv, bathroomDiv, bathroomName, bathroomDist, bathroomAddress1, bathroomAddress2, bathroomUnisex, dirButton) {
   bathroomHeaderDiv.append(bathroomName, bathroomDist);
   bathroomTextDiv.append(bathroomAddress1, bathroomAddress2, bathroomUnisex)
