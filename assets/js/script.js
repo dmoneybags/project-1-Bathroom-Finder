@@ -9,8 +9,9 @@ returns: json response
 
 
 let POSITION = null;
-
+//Makes a call to the refuge restroom api to fetch the restrooms 
 const fetchRestroomsByLocation = (lat, lng, num) => {
+    //Return a promise to resolve asynchronously
     return new Promise((resolve, reject) => {
         fetch("https://www.refugerestrooms.org/api/v1/restrooms/by_location?lat=" + lat + "&lng=" + lng + "&number=" + num)
         .then((response) => {
@@ -18,7 +19,6 @@ const fetchRestroomsByLocation = (lat, lng, num) => {
             response.json()
             .then((json) => {
                 console.log("Recieved restroom json");
-                // renderBathroomList(json, lat, lng);
                 resolve(json);
             })
         })
@@ -29,42 +29,47 @@ const fetchRestroomsByLocation = (lat, lng, num) => {
         })
     })
 };
-
+//Renders a map at position at the target div using the bathroom json to add markers
 const renderMapAtPosition = (position, target, json) => {
     console.log("rendering map with positions:");
     var lat            = position.coords.latitude;
     var lon            = position.coords.longitude;
     var zoom           = 15;
-
+    //transform lat and long to the positions expected
     var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
     var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
     var position       = new OpenLayers.LonLat(lon, lat).transform( fromProjection, toProjection);
-
+    //clear previous results
     wipeResultsContainer();
     document.querySelector("main").setAttribute("class", "row-span-4 w-svw");
 
     map = new OpenLayers.Map("results-container");
+    //attach map to the window for later operations
     window.map = map;
     var mapnik         = new OpenLayers.Layer.OSM();
     map.addLayer(mapnik);
-
+    //add our markers using the custom openLayers objects
     var markers = new OpenLayers.Layer.Markers( "Markers" );
     map.addLayer(markers);
     let homeMarker = new OpenLayers.Icon("./assets/images/marker.png", {w: 21, h: 25}, {x: -10.5, y: -25})
     markers.addMarker(new OpenLayers.Marker(position, homeMarker));
-    
     for (bathroom of json){
         console.log("rendering marker at " + bathroom.longitude + ", " + bathroom.latitude);
+        //have to define a new icon object everytime cannot reuse the same one
         const bathroomIcon = new OpenLayers.Icon("./assets/images/toilet.png", {w: 21, h: 25}, {x: -10.5, y: -25});
         markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(bathroom.longitude, bathroom.latitude).transform( fromProjection, toProjection)
         , bathroomIcon))
     }
+    //set the center at our users location
     map.setCenter(position, zoom);
     document.querySelector(".olMapViewport").classList.add("rounded-md");
 }
+//Function that runs as a callback after we successfully grab a users location
 const successfulLocationGrab = (position) => {
+    //grab the restrooms
     fetchRestroomsByLocation(position.coords.latitude, position.coords.longitude)
     .then((json) => {
+        //render the map
         renderMapAtPosition(position, "demoMap", json);
         renderBathroomList(json, position.coords.latitude, position.coords.longitude);
     });
