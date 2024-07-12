@@ -148,7 +148,7 @@ function addListTextContent(dirButton, bathroomName, bathroomDist, bathroomAddre
 function setListElementAttributes(resultsListDiv, bathroomHeaderDiv, bathroomTextDiv, bathroomContentDiv, bathroomDiv, bathroomName, bathroomDist, bathroomAddress1, bathroomAddress2, bathroomUnisex, dirButton) {
   resultsListDiv.setAttribute(
     'class',
-    'snap-y snap-mandatory bg-slate-900 border border-2 border-solid rounded-md border-slate-700 overflow-y-auto w-11/12 mx-auto row-span-3 mt-2'
+    'snap-y snap-mandatory bg-slate-900 border border-2 border-solid rounded-md border-slate-700 overflow-y-auto w-11/12 mx-auto row-span-3'
   )
 
   bathroomDiv.setAttribute(
