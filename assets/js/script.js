@@ -34,36 +34,39 @@ const renderMapAtPosition = (position, target, json) => {
     console.log("rendering map with positions:");
     var lat            = position.coords.latitude;
     var lon            = position.coords.longitude;
-    var zoom           = 18;
+    var zoom           = 15;
 
     var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
     var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
     var position       = new OpenLayers.LonLat(lon, lat).transform( fromProjection, toProjection);
 
     wipeResultsContainer();
+    document.querySelector("main").setAttribute("class", "row-span-4 w-svw");
 
     map = new OpenLayers.Map("results-container");
+    window.map = map;
     var mapnik         = new OpenLayers.Layer.OSM();
     map.addLayer(mapnik);
 
     var markers = new OpenLayers.Layer.Markers( "Markers" );
     map.addLayer(markers);
-    let homeMarker = new OpenLayers.Icon("/assets/images/marker.png", {w: 21, h: 25}, {x: -10.5, y: -25})
+    let homeMarker = new OpenLayers.Icon("./assets/images/marker.png", {w: 21, h: 25}, {x: -10.5, y: -25})
     markers.addMarker(new OpenLayers.Marker(position, homeMarker));
     
     for (bathroom of json){
         console.log("rendering marker at " + bathroom.longitude + ", " + bathroom.latitude);
-        const bathroomIcon = new OpenLayers.Icon("/assets/images/toilet.png", {w: 21, h: 25}, {x: -10.5, y: -25});
+        const bathroomIcon = new OpenLayers.Icon("./assets/images/toilet.png", {w: 21, h: 25}, {x: -10.5, y: -25});
         markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(bathroom.longitude, bathroom.latitude).transform( fromProjection, toProjection)
         , bathroomIcon))
     }
     map.setCenter(position, zoom);
+    document.querySelector(".olMapViewport").classList.add("rounded-md");
 }
 const successfulLocationGrab = (position) => {
     fetchRestroomsByLocation(position.coords.latitude, position.coords.longitude)
     .then((json) => {
-        renderMapAtPosition(position, "demoMap", json)
-        renderBathroomList(json, position.coords.latitude, position.coords.longitude)
+        renderMapAtPosition(position, "demoMap", json);
+        renderBathroomList(json, position.coords.latitude, position.coords.longitude);
     });
 }
 const errorOnLocationGrab = (err) => {
@@ -71,9 +74,10 @@ const errorOnLocationGrab = (err) => {
 }
 
 const renderBathroomList = (json, userLat, userLng) => {
-  document.querySelector("main").setAttribute("class", "row-span-4 w-svw");
   console.log(json)
-  
+
+  wipeResultsListing();
+
   for(i=0; i<5; i++) {
     const name = json[i].name;
     const street = json[i].street;
@@ -94,6 +98,8 @@ const renderBathroomList = (json, userLat, userLng) => {
 
     const resultsListDiv = document.querySelector("#results-listing");
     const bathroomDiv = document.createElement('div');
+    bathroomDiv.dataset.lat = destLat;
+    bathroomDiv.dataset.lng = destLng;
     const bathroomHeaderDiv = document.createElement('div');
     const bathroomName = document.createElement('h3');
     const bathroomDist = document.createElement('p');
@@ -103,15 +109,31 @@ const renderBathroomList = (json, userLat, userLng) => {
     const bathroomAddress2  = document.createElement('p');
     const bathroomUnisex = document.createElement('p');
     const dirButton = document.createElement('button');
-    
+
     addListTextContent(dirButton, bathroomName, bathroomDist, bathroomAddress1, bathroomAddress2, bathroomUnisex, bathroomListEntry);
 
     setListElementAttributes(resultsListDiv, bathroomHeaderDiv, bathroomTextDiv, bathroomContentDiv, bathroomDiv, bathroomName, bathroomDist, bathroomAddress1, bathroomAddress2, bathroomUnisex, dirButton);
 
     appendBathroomListElements(resultsListDiv, bathroomHeaderDiv, bathroomTextDiv, bathroomContentDiv, bathroomDiv, bathroomName, bathroomDist, bathroomAddress1, bathroomAddress2, bathroomUnisex, dirButton);
+
+    addEventListenersToBathroomDiv(bathroomDiv, userLat, userLng);
   }  
 }
 
+//adding event listeners to list elements
+const addEventListenersToBathroomDiv = (bathroomDiv, userLat, userLng) => {
+    bathroomDiv.addEventListener('click', (event)=> {
+        console.log("triggered event listener");
+        if (event.target.tagName === "BUTTON"){
+            openGoogleMapDirURL(userLat, userLng, bathroomDiv.dataset.lat, bathroomDiv.dataset.lng)
+        } else {
+            var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+            var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+            var position       = new OpenLayers.LonLat(bathroomDiv.dataset.lng, bathroomDiv.dataset.lat).transform( fromProjection, toProjection);
+            window.map.setCenter(position, 15);
+        }
+    })
+}
 //adding text to list elements
 function addListTextContent(dirButton, bathroomName, bathroomDist, bathroomAddress1, bathroomAddress2, bathroomUnisex, bathroomListEntry) {
   dirButton.textContent = `Get directions`;
@@ -126,12 +148,12 @@ function addListTextContent(dirButton, bathroomName, bathroomDist, bathroomAddre
 function setListElementAttributes(resultsListDiv, bathroomHeaderDiv, bathroomTextDiv, bathroomContentDiv, bathroomDiv, bathroomName, bathroomDist, bathroomAddress1, bathroomAddress2, bathroomUnisex, dirButton) {
   resultsListDiv.setAttribute(
     'class',
-    'bg-slate-900 border border-2 border-solid rounded-md border-slate-700 overflow-y-auto w-11/12 mx-auto row-span-3 mt-2'
+    'snap-y snap-mandatory bg-slate-900 border border-2 border-solid rounded-md border-slate-700 overflow-y-auto w-11/12 mx-auto row-span-3 mt-2'
   )
 
   bathroomDiv.setAttribute(
     'class',
-    'bg-blue-950 border border-2 border-solid rounded-lg border-slate-700 m-1 flex flex-col place-content-between hover:cursor-pointer'
+    'snap-start snap-always bg-blue-950 border border-2 border-solid rounded-lg border-slate-700 m-1 flex flex-col place-content-between hover:cursor-pointer'
   );
 
   bathroomHeaderDiv.setAttribute(
@@ -228,8 +250,12 @@ function wipeResultsContainer() {
   document.querySelector("#results-container").innerHTML = "";
 }
 
-function getGoogleMapDirURL (userLat, userLon, bathroomLat, bathroomLon) {
-  return "https://www.google.com/maps/dir/" + userLat + "," + userLon + "/" + bathroomLat + "," + bathroomLon ;
+function wipeResultsListing() {
+  document.querySelector("#results-listing").innerHTML = "";
+}
+
+function openGoogleMapDirURL (userLat, userLon, bathroomLat, bathroomLon) {
+  window.open("https://www.google.com/maps/dir/" + userLat + "," + userLon + "/" + bathroomLat + "," + bathroomLon, '_blank');
 }
 /*
 Event listeners for the address search bar and button. 
@@ -244,7 +270,7 @@ document.querySelector("#address-search-btn").addEventListener("click", function
             }
         }
         renderMapAtPosition(position, "demoMap", json.bathroomJson);
-        renderBathroomList(json, position.coords.latitude, position.coords.longitude)
+        renderBathroomList(json.bathroomJson, position.coords.latitude, position.coords.longitude)
     })
 });
 document.querySelector("#address-input").addEventListener("keypress", function(event) {
@@ -254,6 +280,6 @@ document.querySelector("#address-input").addEventListener("keypress", function(e
   }
 });
 document.querySelector("#near-search-btn").addEventListener("click", function(event){
-  document.querySelector("#results-listing").innerHTML = ""
+  
   navigator.geolocation.getCurrentPosition(successfulLocationGrab, errorOnLocationGrab);
 })
