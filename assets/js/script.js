@@ -235,8 +235,8 @@ function wipeResultsListing() {
   document.querySelector("#results-listing").innerHTML = "";
 }
 
-function getGoogleMapDirURL (userLat, userLon, bathroomLat, bathroomLon) {
-  return "https://www.google.com/maps/dir/" + userLat + "," + userLon + "/" + bathroomLat + "," + bathroomLon ;
+function openGoogleMapDirURL (userLat, userLon, bathroomLat, bathroomLon) {
+  window.open("https://www.google.com/maps/dir/" + userLat + "," + userLon + "/" + bathroomLat + "," + bathroomLon, '_blank');
 }
 /*
 Event listeners for the address search bar and button. 
