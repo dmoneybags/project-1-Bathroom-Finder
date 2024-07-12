@@ -58,6 +58,7 @@ const renderMapAtPosition = (position, target, json) => {
         , bathroomIcon))
     }
     map.setCenter(position, zoom);
+    document.querySelector("#OpenLayers_Map_2_OpenLayers_ViewPort").classList.add("rounded-md");
 }
 const successfulLocationGrab = (position) => {
     fetchRestroomsByLocation(position.coords.latitude, position.coords.longitude)
