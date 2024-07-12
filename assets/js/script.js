@@ -212,8 +212,8 @@ function appendBathroomListElements (resultsListDiv, bathroomHeaderDiv, bathroom
 }
 
 /*
-Search restroom by the address input
-Fetch geocode from Geoapify, then pass to fetchRestroomsByLocation
+Get restrooms by address from #address-input.  Leverages Geoapify to forward geocoding the address then pass to 
+fetchRestroomsByLocation for bathroom locations
 */
 function getRestroomsByAddress() {
   const addrEl = document.querySelector("#address-input");
@@ -246,17 +246,32 @@ function getRestroomsByAddress() {
   })
 }
 
+/*
+Wipe the content within #results-container containter
+*/
 function wipeResultsContainer() {
   document.querySelector("#results-container").innerHTML = "";
 }
 
+/*
+Wipe the content within #results-listing containter
+*/
 function wipeResultsListing() {
   document.querySelector("#results-listing").innerHTML = "";
 }
 
+/*
+Open a new tab to Google Map with directions to the desired bathroom.
+arguments: 
+userLat, latitude of the user, number
+userLon, longitude of the user, number
+bathroomLat, latitude of the bathroom, number
+bathroomLon, longitude of the bathroom, number
+*/
 function openGoogleMapDirURL (userLat, userLon, bathroomLat, bathroomLon) {
   window.open("https://www.google.com/maps/dir/" + userLat + "," + userLon + "/" + bathroomLat + "," + bathroomLon, '_blank');
 }
+
 /*
 Event listeners for the address search bar and button. 
 */
@@ -279,7 +294,10 @@ document.querySelector("#address-input").addEventListener("keypress", function(e
     document.querySelector("#address-search-btn").click();
   }
 });
+
+/*
+Event listeners for the search near me button click event
+*/
 document.querySelector("#near-search-btn").addEventListener("click", function(event){
-  
   navigator.geolocation.getCurrentPosition(successfulLocationGrab, errorOnLocationGrab);
 })
