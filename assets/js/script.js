@@ -153,7 +153,7 @@ function setListElementAttributes(resultsListDiv, bathroomHeaderDiv, bathroomTex
 
   bathroomDiv.setAttribute(
     'class',
-    'snap-start snap-always bg-blue-950 border border-2 border-solid rounded-lg border-slate-700 m-1 flex flex-col place-content-between'
+    'snap-start snap-always bg-blue-950 border border-2 border-solid rounded-lg border-slate-700 m-1 flex flex-col place-content-between hover:cursor-pointer'
   );
 
   bathroomHeaderDiv.setAttribute(
@@ -198,7 +198,7 @@ function setListElementAttributes(resultsListDiv, bathroomHeaderDiv, bathroomTex
 
   dirButton.setAttribute(
     'class',
-    'py-1 px-2 m-2 text-xs text-blue-950 text-900 bg-sky-300 border border-3 border-slate-900 rounded-full w-1/4 max-w-fit h-1/4 justify-self-end self-end'
+    'py-1 px-2 m-2 text-xs text-blue-950 text-900 bg-sky-300 border border-3 border-slate-900 rounded-full w-1/4 max-w-fit h-1/4 justify-self-end self-end hover:invert'
   )
 }
 
