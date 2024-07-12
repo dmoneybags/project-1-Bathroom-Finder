@@ -1,3 +1,4 @@
+let POSITION = null;
 /*
 arguments: lng, longitude of the location, number
 lat, latitude of the location, number
@@ -5,11 +6,6 @@ num, nunber to return
 
 returns: json response
 */
-// Access the classes through the global ol namespace
-
-
-let POSITION = null;
-//Makes a call to the refuge restroom api to fetch the restrooms 
 const fetchRestroomsByLocation = (lat, lng, num) => {
     //Return a promise to resolve asynchronously
     return new Promise((resolve, reject) => {
