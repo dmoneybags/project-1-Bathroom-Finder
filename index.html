@@ -10,16 +10,20 @@
 </head>
 
 <body class="grid grid-rows-12 gap-4 h-svh w-svw place-content-center bg-slate-900">
+  <!-- header container does nothing but contains the title -->
   <header class="row-span-2 border-2 border-solid border-slate-700 rounded-md place-content-center mt-4 bg-blue-950 w-11/12 px-4 mx-auto">
     <h1 class="text-center text-sky-300 text-4xl font-semibold">Bathroom Finder</h1>
   </header>
+  <!-- on landing page, main container holds the main image, after a search is run, it holds the resulting map -->
   <main class="row-span-7 w-svw">
     <article id="results-container" class="rounded-md w-11/12 mx-auto h-full">
-        <img id="toilet-img" class="rounded-md mx-auto" src="./assets/images/pexels-cottonbro-4114708_400.533.jpg" alt="">
+        <img id="toilet-img" class="rounded-md mx-auto" src="./assets/images/pexels-cottonbro-4114708_400.533.jpg" alt="man holding roll of toilet paper to one eye as if it is a telescope">
     </article>
   </main>
+ <!-- section container holds dynamically created list elements displaying bathroom search results  -->
   <section id="results-listing" class="hidden">
   </section>
+ <!-- the nav element contains the search form allowing the user to search for bathrooms nearest to the user's present location or, alternately, by address input -->
   <nav class="row-span-3 border-2 rounded-md border-solid mb-4 border-slate-700 bg-blue-950 pt-2 w-11/12 px-4 mx-auto">
     <form class="flex flex-col h-full place-items-center align-middle">
       <button type="button" class="w-1/2 border border-solid rounded-full border-slate-700 mt-3 mb-5 bg-sky-300 text-slate-900 text-sm font-semibold py-2" id="near-search-btn">Search near me</button> 
@@ -30,7 +34,7 @@
       </div>
     </form>
   </nav>
-  <script src="./OpenLayers.js"></script>
+  <script src="./assets/js/OpenLayers.js"></script>
   <script src="./assets/js/script.js"></script>
 </body>
 
