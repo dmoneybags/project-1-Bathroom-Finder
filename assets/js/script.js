@@ -49,12 +49,12 @@ const renderMapAtPosition = (position, target, json) => {
 
     var markers = new OpenLayers.Layer.Markers( "Markers" );
     map.addLayer(markers);
-    let homeMarker = new OpenLayers.Icon("/assets/images/marker.png", {w: 21, h: 25}, {x: -10.5, y: -25})
+    let homeMarker = new OpenLayers.Icon("./assets/images/marker.png", {w: 21, h: 25}, {x: -10.5, y: -25})
     markers.addMarker(new OpenLayers.Marker(position, homeMarker));
     
     for (bathroom of json){
         console.log("rendering marker at " + bathroom.longitude + ", " + bathroom.latitude);
-        const bathroomIcon = new OpenLayers.Icon("/assets/images/toilet.png", {w: 21, h: 25}, {x: -10.5, y: -25});
+        const bathroomIcon = new OpenLayers.Icon("./assets/images/toilet.png", {w: 21, h: 25}, {x: -10.5, y: -25});
         markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(bathroom.longitude, bathroom.latitude).transform( fromProjection, toProjection)
         , bathroomIcon))
     }
