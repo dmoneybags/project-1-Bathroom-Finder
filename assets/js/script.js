@@ -275,7 +275,7 @@ Wipe the content within #results-listing containter
 */
 function wipeResultsListing() {
   const resultListingEl = document.querySelector("#results-listing");
-  // resultListingEl.innerHTML = "";
+  resultListingEl.innerHTML = "";
   resultListingEl.setAttribute("class", "row-span-3 bg-slate-900 border border-2 border-solid rounded-md border-slate-700 w-11/12 mx-auto animate-pulse");
 }
 
