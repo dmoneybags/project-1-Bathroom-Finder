@@ -1,4 +1,8 @@
+// POSITION object is used in multiple function for user location
 let POSITION = null;
+// Predefined loading screen content
+const loadingHTML = '<div class="bg-blue-950 border border-2 border-solid rounded-lg border-slate-700 m-1 flex flex-col place-content-between"><div class="border-b-2 border-solid border-slate-600 flex flex-row p-1 place-content-between w-9/10 items-center"><div class="bg-sky-800 flex-none pl-1 w-6/12 h-6 rounded-full"></div>      <div class="bg-sky-800 w-3/12 h-6 mr-2 rounded-full"></div>  </div>  <div class="flex flex-row place-content-between pr-3">      <div class="p-1 justify-start ml-3">          <div class="bg-sky-800 h-4 w-40 rounded-full" ></div><div class="bg-sky-800 my-1 h-4 w-24 rounded-full"></div><div class="bg-sky-800 h-4 w-32 rounded-full"></div></div><div class="py-1 px-2 m-2 bg-sky-800 border border-3 border-slate-900 rounded-full w-24 h-12 self-end"></div></div></div>'
+
 /*
 arguments: lng, longitude of the location, number
 lat, latitude of the location, number
@@ -7,7 +11,7 @@ num, nunber to return
 returns: json response
 */
 const fetchRestroomsByLocation = (lat, lng, num) => {
-    //Return a promise to resolve asynchronously
+  //Return a promise to resolve asynchronously
     return new Promise((resolve, reject) => {
         fetch("https://www.refugerestrooms.org/api/v1/restrooms/by_location?lat=" + lat + "&lng=" + lng + "&number=" + num)
         .then((response) => {
@@ -37,7 +41,6 @@ const renderMapAtPosition = (position, target, json) => {
     var position       = new OpenLayers.LonLat(lon, lat).transform( fromProjection, toProjection);
     //clear previous results
     wipeResultsContainer();
-    document.querySelector("main").setAttribute("class", "row-span-4 w-svw");
 
     map = new OpenLayers.Map("results-container");
     //attach map to the window for later operations
@@ -264,13 +267,16 @@ Wipe the content within #results-container containter
 */
 function wipeResultsContainer() {
   document.querySelector("#results-container").innerHTML = "";
+  document.querySelector("main").setAttribute("class", "row-span-4 w-svw");
 }
 
 /*
 Wipe the content within #results-listing containter
 */
 function wipeResultsListing() {
-  document.querySelector("#results-listing").innerHTML = "";
+  const resultListingEl = document.querySelector("#results-listing");
+  resultListingEl.innerHTML = "";
+  resultListingEl.setAttribute("class", "row-span-3 bg-slate-900 border border-2 border-solid rounded-md border-slate-700 w-11/12 mx-auto animate-pulse");
 }
 
 /*
@@ -286,10 +292,42 @@ function openGoogleMapDirURL (userLat, userLon, bathroomLat, bathroomLon) {
 }
 
 /*
+wipe both results container and listing to render the loading effect
+*/
+function renderLoading() {
+  wipeResultsContainer();
+  wipeResultsListing();
+  renderLoadingMap();
+  renderLoadingListing();
+}
+
+/*
+Insert the loading placeholder to the map container
+*/
+function renderLoadingMap() {
+  const resultsContainerEl = document.querySelector("#results-container");
+
+  const imgEl = document.createElement("img");
+  imgEl.src = "./assets/images/toilet.png";
+  imgEl.alt = "A restroom sign bouncing indicates looking for restroom";
+  imgEl.classList = "w-1/3 animate-bounce mx-auto self-end"
+  resultsContainerEl.append(imgEl);
+}
+
+/*
+Insert the loading placeholder to the listing container
+*/
+function renderLoadingListing() {
+  const resultsListingEl = document.querySelector("#results-listing");
+  resultsListingEl.innerHTML = loadingHTML + loadingHTML;
+}
+
+/*
 Event listeners for the address search bar and button. 
 */
 document.querySelector("#address-search-btn").addEventListener("click", function(event){
-    getRestroomsByAddress()
+  renderLoading();  
+  getRestroomsByAddress()
     .then((json) => {
         const position = {
             coords: {
@@ -301,6 +339,7 @@ document.querySelector("#address-search-btn").addEventListener("click", function
         renderBathroomList(json.bathroomJson, position.coords.latitude, position.coords.longitude)
     })
 });
+// Trigger a click event if the user press enter in the input field
 document.querySelector("#address-input").addEventListener("keypress", function(event) {
   if (event.key === "Enter") {
     event.preventDefault();
@@ -313,4 +352,5 @@ Event listeners for the search near me button click event
 */
 document.querySelector("#near-search-btn").addEventListener("click", function(event){
   navigator.geolocation.getCurrentPosition(successfulLocationGrab, errorOnLocationGrab);
+  renderLoading(); 
 })
